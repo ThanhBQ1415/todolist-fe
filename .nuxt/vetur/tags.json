@@ -1,0 +1,11 @@
+{
+  "Header": {
+    "description": "Auto imported from components/Header.vue"
+  },
+  "TaskAddTaskDialog": {
+    "description": "Auto imported from components/task/add_task_dialog.vue"
+  },
+  "TaskDetailDialog": {
+    "description": "Auto imported from components/task/task_detail_dialog.vue"
+  }
+}
