@@ -1,4 +1,4 @@
-import * as api from './apiSummoner';
+import * as api from './api-summoner';
 
 // Headers
 export function getHeaders() {
@@ -67,7 +67,7 @@ export async function loginUser(data: { email: string; password: string }) {
   }
 }
 
-export async function registerUser(data: { email: string; password: string; name: string }) {
+export async function registerUser(data: { email: string; password: string; fullName: string }) {
   try {
     const res = await fetch(api.registerApi(), {
       method: 'POST',

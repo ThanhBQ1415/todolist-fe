@@ -2,10 +2,19 @@
   "Header": {
     "description": "Auto imported from components/Header.vue"
   },
+  "LoginForgotPassword": {
+    "description": "Auto imported from components/login/ForgotPassword.vue"
+  },
+  "LoginRegister": {
+    "description": "Auto imported from components/login/Register.vue"
+  },
+  "ProjectCard": {
+    "description": "Auto imported from components/project/ProjectCard.vue"
+  },
   "TaskAddTaskDialog": {
-    "description": "Auto imported from components/task/add_task_dialog.vue"
+    "description": "Auto imported from components/task/AddTaskDialog.vue"
   },
   "TaskDetailDialog": {
-    "description": "Auto imported from components/task/task_detail_dialog.vue"
+    "description": "Auto imported from components/task/TaskDetailDialog.vue"
   }
 }

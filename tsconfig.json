@@ -14,5 +14,12 @@
         "@/*": ["./*"]
       }
     },
-    "exclude": ["node_modules", ".nuxt", "dist"]
+    "exclude": [
+      "node_modules", 
+      ".nuxt", 
+      "dist",
+      "nuxt.config.js",
+      "tailwind.config.js",
+      "plugins/*.js"
+    ]
   }
