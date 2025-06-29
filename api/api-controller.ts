@@ -136,6 +136,23 @@ export async function deleteUser(id: string | number) {
   }
 }
 
+export async function uploadAvatar(userId: string | number, file: File) {
+  const formData = new FormData();
+  formData.append('avatar', file);
+  formData.append('userId', userId.toString());
+  const token = localStorage.getItem('token');
+  try {
+    const res = await fetch(api.uploadAvatarApi(), {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData
+    });
+    return await res.json();
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Network error' };
+  }
+}
+
 // --- PROJECT ---
 export async function getAllProjects() {
   try {
