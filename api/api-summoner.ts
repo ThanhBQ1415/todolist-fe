@@ -49,3 +49,4 @@ export const createCommentApi = () => `${API_DOMAIN}/api/comments`;
 export const updateCommentApi = (id: string | number) => `${API_DOMAIN}/api/comments/${id}`;
 export const deleteCommentApi = (id: string | number) => `${API_DOMAIN}/api/comments/${id}`;
 
+export const uploadAvatarApi = () => `${API_DOMAIN}/api/users/upload-avatar`;

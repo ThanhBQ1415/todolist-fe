@@ -18,11 +18,11 @@
       />
 
       <!-- Login Form -->
-      <el-form v-if="!showForgotPassword && !showRegister" @submit.native.prevent="login" class="space-y-6">
+      <el-form v-if="formType === 'login'" @submit.native.prevent="login" class="space-y-6">
         <el-form-item label="Email" label-for="email">
           <el-input
             id="email"
-            v-model="email"
+            v-model="loginForm.email"
             type="email"
             placeholder="Nhập email của bạn"
             required
@@ -32,7 +32,7 @@
         <el-form-item label="Mật khẩu" label-for="password">
           <el-input
             id="password"
-            v-model="password"
+            v-model="loginForm.password"
             type="password"
             placeholder="Nhập mật khẩu của bạn"
             required
@@ -40,7 +40,7 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-checkbox v-model="rememberMe">Ghi nhớ đăng nhập</el-checkbox>
+          <el-checkbox v-model="loginForm.rememberMe">Ghi nhớ đăng nhập</el-checkbox>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -57,29 +57,29 @@
 
       <!-- Forgot Password Form -->
       <ForgotPassword
-        v-if="showForgotPassword"
+        v-if="formType === 'forgot'"
         :is-loading="isLoading"
         @submit="forgotPassword"
-        @back="backToLogin"
+        @back="showLogin"
       />
 
       <!-- Register Form -->
       <Register
-        v-if="showRegister"
+        v-if="formType === 'register'"
         :is-loading="isLoading"
         :passwords-match="passwordsMatch"
-        :register-data="registerData"
-        @update:register-data="val => registerData = val"
+        :register-data="registerForm"
+        @update:register-data="val => registerForm = val"
         @submit="register"
-        @back="backToLogin"
+        @back="showLogin"
       />
 
       <!-- Navigation Links -->
       <div class="mt-6 text-center space-y-3">
-        <div v-if="!showForgotPassword && !showRegister" class="space-y-2">
+        <div v-if="formType === 'login'" class="space-y-2">
           <el-button
             type="text"
-            @click="showForgotPassword = true"
+            @click="showForgot"
             class="text-blue-600 hover:text-blue-800 text-sm font-medium transition duration-200"
           >
             Quên mật khẩu?
@@ -88,12 +88,21 @@
             Chưa có tài khoản?
             <el-button
               type="text"
-              @click="showRegister = true"
+              @click="showRegister"
               class="text-blue-600 hover:text-blue-800 font-medium transition duration-200"
             >
               Đăng ký ngay
             </el-button>
           </div>
+        </div>
+        <div v-else class="space-y-2">
+          <el-button
+            type="text"
+            @click="showLogin"
+            class="text-blue-600 hover:text-blue-800 text-sm font-medium transition duration-200"
+          >
+            Quay lại đăng nhập
+          </el-button>
         </div>
       </div>
     </div>
@@ -110,22 +119,18 @@ export default {
   components: { ForgotPassword, Register },
   data() {
     return {
-
-      email: '',
-      password: '',
-      rememberMe: false,
-
-      showForgotPassword: false,
-      forgotEmail: '',
-
-      showRegister: false,
-      registerData: {
+      formType: 'login', // 'login' | 'register' | 'forgot'
+      loginForm: {
+        email: '',
+        password: '',
+        rememberMe: false,
+      },
+      registerForm: {
         fullName: '',
         email: '',
         password: '',
         confirmPassword: ''
       },
-
       isLoading: false,
       alertMessage: '',
       alertType: 'success'
@@ -133,15 +138,18 @@ export default {
   },
   computed: {
     passwordsMatch() {
-      return this.registerData.password === this.registerData.confirmPassword;
+      return this.registerForm.password === this.registerForm.confirmPassword;
     }
   },
   methods: {
+    showLogin() { this.formType = 'login'; this.clearAlert(); this.resetForms(); },
+    showRegister() { this.formType = 'register'; this.clearAlert(); this.resetForms(); },
+    showForgot() { this.formType = 'forgot'; this.clearAlert(); this.resetForms(); },
     async login() {
       this.isLoading = true;
       this.clearAlert();
       try {
-        const result = await loginUser({ email: this.email, password: this.password });
+        const result = await loginUser({ email: this.loginForm.email, password: this.loginForm.password });
         if (result.success) {
           this.showAlert(result.message, 'success');
           this.$router.push('/project');
@@ -158,10 +166,9 @@ export default {
       this.isLoading = true;
       this.clearAlert();
       try {
-        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000));
         this.showAlert('Email đặt lại mật khẩu đã được gửi! Vui lòng kiểm tra hộp thư.', 'success');
-        this.backToLogin();
+        this.showLogin();
       } catch (error) {
         this.showAlert('Không thể gửi email. Vui lòng thử lại sau.', 'error');
       } finally {
@@ -183,7 +190,7 @@ export default {
         });
         if (result.success) {
           this.showAlert('Đăng ký thành công! Vui lòng đăng nhập.', 'success');
-          this.backToLogin();
+          this.showLogin();
         } else {
           this.showAlert(result.error || 'Đăng ký thất bại. Vui lòng thử lại sau.', 'error');
         }
@@ -193,23 +200,9 @@ export default {
         this.isLoading = false;
       }
     },
-    backToLogin() {
-      this.showForgotPassword = false;
-      this.showRegister = false;
-      this.clearAlert();
-      this.resetForms();
-    },
     resetForms() {
-      this.email = '';
-      this.password = '';
-      this.rememberMe = false;
-      this.forgotEmail = '';
-      this.registerData = {
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      };
+      this.loginForm = { email: '', password: '', rememberMe: false };
+      this.registerForm = { fullName: '', email: '', password: '', confirmPassword: '' };
     },
     showAlert(message, type = 'success') {
       this.alertMessage = message;

@@ -7,7 +7,7 @@
     <el-form-item label="Họ và tên" label-for="regName">
       <el-input
         id="regName"
-        v-model="formData.name"
+        v-model="formData.fullName"
         type="text"
         placeholder="Nhập họ và tên"
         required
@@ -76,7 +76,7 @@ export default {
   data() {
     return {
       formData: {
-        name: '',
+        fullName: '',
         email: '',
         password: '',
         confirmPassword: ''

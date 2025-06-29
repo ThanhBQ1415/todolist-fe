@@ -25,60 +25,79 @@
       </div>
     </div>
 
-    <div class="" style="height: calc(100vh - 120px);">
-      <div class="flex flex-row gap-8 h-full min-h-0">
-        <Container orientation="horizontal" @drop="onColumnDrop">
-          <Draggable v-for="(col, colIdx) in columns" :key="col.statusId">
-            <el-card class="bg-white rounded-lg shadow flex flex-col w-[350px] min-w-[350px] max-w-[350px] h-[600px]">
-              <div
-                class="w-80 h-30 border-b-2 flex items-center font-bold text-xs "
-                :style="{ borderColor: getStatusColor(col.name) }"
-              >
-                <span class="mr-2">
-                  <i class="el-icon-s-grid" style="font-size: 16px; color: #D1D5DB;"></i>
-                </span>
-                <span :style="{ color: getStatusColor(col.name) }">{{ col.name.toUpperCase() }}</span>
-                <span class="ml-auto flex items-center gap-2">
-                  <span class="flex items-center text-red-500 font-normal text-xs">
-                    <i class="el-icon-star-off w-3 h-3 mr-0.5"></i>
-                    {{ col.stars || 0 }}
+    <div class="" style="">
+      <div class="overflow-x-scroll h-full">
+        <div class="flex flex-row gap-8 h-full min-h-0" style="min-width: max-content;">
+          <Container orientation="horizontal" @drop="onColumnDrop">
+            <Draggable v-for="(col, colIdx) in columns" :key="col.statusId">
+              <el-card class="bg-white rounded-lg shadow flex flex-col w-[350px] min-w-[350px] max-w-[350px] h-full">
+                <div
+                  class="w-80 h-30 border-b-2 flex items-center font-bold text-xs "
+                  :style="{ borderColor: getStatusColor(col.name) }"
+                >
+                  <span class="mr-2">
+                    <i class="el-icon-s-grid" style="font-size: 16px; color: #D1D5DB;"></i>
                   </span>
-                  <span class="flex items-center text-yellow-500 font-normal text-xs">
-                    <i class="el-icon-s-grid w-3 h-3 mr-0.5"></i>
-                    {{ col.tasks ? col.tasks.length : 0 }}
-                  </span>
-                  <el-button class="ml-2 p-1 rounded hover:bg-gray-100" type="text" size="mini">
-                    <i class="el-icon-more w-4 h-4 text-gray-400"></i>
-                  </el-button>
-                </span>
-              </div>
-              <div class="flex-1 overflow-x-auto">
-                <Container group-name="tasks" :get-child-payload="i => ({ ...col.tasks[i], sourceColIdx: colIdx })" @drop="e => onTaskDrop(colIdx, e)">
-                  <Draggable v-for="(task, tIdx) in col.tasks" :key="task.taskId">
-                    <el-card class="bg-gray-50 rounded p-2 mb-2 shadow text-xs cursor-pointer" @click.native="openTaskDetail(task)">
-                      <div class="font-semibold text-gray-800">{{ task.taskId }}. {{ task.title }}</div>
-                      <div class="text-gray-500">{{ task.description }}</div>
-                      <div class="text-gray-400 mt-1">
-                        {{ formatDate(task.startDate) }} - {{ formatDate(task.dueDate) }}
-                      </div>
-                      <div class="flex flex-wrap gap-1 mt-1">
-                        <span v-for="label in getLabelsForTask(task)" :key="label.labelId" :style="{ backgroundColor: label.color, color: '#fff', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }">
-                          {{ label.name }}
-                        </span>
-                      </div>
-                    </el-card>
-                  </Draggable>
-                  <div v-if="col.name && col.name.toUpperCase() === 'NEW'" class="px-2 py-2 bg-gray-50 rounded-b flex items-center cursor-pointer hover:bg-gray-100" @click="showAddTaskDialog(col.statusId)">
-                    <span class="text-blue-500 text-sm font-medium flex items-center">
-                      <i class="el-icon-plus w-4 h-4 mr-1"></i>
-                      Thêm task
+                  <span :style="{ color: getStatusColor(col.name) }">{{ col.name.toUpperCase() }}</span>
+                  <span class="ml-auto flex items-center gap-2">
+                    <span class="flex items-center text-red-500 font-normal text-xs">
+                      <i class="el-icon-star-off w-3 h-3 mr-0.5"></i>
+                      {{ col.stars || 0 }}
                     </span>
-                  </div>
-                </Container>
-              </div>
-            </el-card>
-          </Draggable>
-        </Container>
+                    <span class="flex items-center text-yellow-500 font-normal text-xs">
+                      <i class="el-icon-s-grid w-3 h-3 mr-0.5"></i>
+                      {{ col.tasks ? col.tasks.length : 0 }}
+                    </span>
+                    <el-button class="ml-2 p-1 rounded hover:bg-gray-100" type="text" size="mini">
+                      <i class="el-icon-more w-4 h-4 text-gray-400"></i>
+                    </el-button>
+                  </span>
+                </div>
+                <div class="flex-1">
+                  <Container group-name="tasks" :get-child-payload="i => ({ ...col.tasks[i], sourceColIdx: colIdx })" @drop="e => onTaskDrop(colIdx, e)">
+                    <Draggable v-for="(task, tIdx) in col.tasks" :key="task.taskId">
+                      <el-card class="bg-gray-50 rounded p-2 mb-2 shadow text-xs cursor-pointer" @click.native="openTaskDetail(task)">
+                        <div class="font-semibold text-gray-800">{{ task.taskId }}. {{ task.title }}</div>
+                        <div class="text-gray-500">{{ task.description }}</div>
+                        <div class="text-gray-400 mt-1">
+                          {{ formatDate(task.startDate) }} - {{ formatDate(task.dueDate) }}
+                        </div>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                          <span v-for="label in getLabelsForTask(task)" :key="label.labelId" :style="{ backgroundColor: label.color, color: '#fff', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }">
+                            {{ label.name }}
+                          </span>
+                        </div>
+                        <!-- Người được giao -->
+                        <div class="flex items-center mt-1">
+                          <el-dropdown @command="userId => changeAssignee(task, userId)">
+                            <span class="flex items-center cursor-pointer">
+                              <img :src="getUserById(task.assigneeId)?.avatarUrl || 'https://via.placeholder.com/32'" class="w-8 h-8 rounded-full mr-2" alt="avatar" />
+                              <span class="font-medium text-xs">{{ getUserById(task.assigneeId)?.fullName || 'Chưa phân công' }}</span>
+                              <i class="el-icon-arrow-down ml-1 text-xs"></i>
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                              <el-dropdown-item v-for="user in users" :key="user.userId" :command="user.userId">
+                                <img :src="user.avatarUrl || 'https://via.placeholder.com/24'" class="w-6 h-6 rounded-full mr-2" />
+                                <span class="font-medium text-xs">{{ user.fullName }}</span>
+                                <span class="text-gray-400 text-xs ml-1">{{ user.email }}</span>
+                              </el-dropdown-item>
+                            </el-dropdown-menu>
+                          </el-dropdown>
+                        </div>
+                      </el-card>
+                    </Draggable>
+                    <div v-if="col.name && col.name.toUpperCase() === 'NEW'" class="px-2 py-2 bg-gray-50 rounded-b flex items-center cursor-pointer hover:bg-gray-100" @click="showAddTaskDialog(col.statusId)">
+                      <span class="text-blue-500 text-sm font-medium flex items-center">
+                        <i class="el-icon-plus w-4 h-4 mr-1"></i>
+                        Thêm task
+                      </span>
+                    </div>
+                  </Container>
+                </div>
+              </el-card>
+            </Draggable>
+          </Container>
+        </div>
       </div>
     </div>
     <!-- Dialogs -->
@@ -262,6 +281,19 @@ export default {
         await this.fetchColumnsAndTasks();
       } else {
         alert('Cập nhật task thất bại!');
+      }
+    },
+    getUserById(userId) {
+      return this.users.find(u => u.userId === userId);
+    },
+    async changeAssignee(task, newAssigneeId) {
+      if (task.assigneeId === newAssigneeId) return;
+      const res = await updateTask(task.taskId, { ...task, assigneeId: newAssigneeId });
+      if (res.success) {
+        task.assigneeId = newAssigneeId;
+        this.$message.success('Đã đổi người được giao!');
+      } else {
+        this.$message.error('Đổi người được giao thất bại!');
       }
     },
   },

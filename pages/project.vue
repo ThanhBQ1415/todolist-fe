@@ -34,20 +34,14 @@
 
     <!-- Pagination -->
     <div class="flex justify-end mt-6" v-if="totalPages > 1">
-      <nav class="flex items-center space-x-2">
-        <el-button @click="prevPage" :disabled="currentPage === 1" class="px-3 py-1 rounded text-gray-500 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed" icon="el-icon-arrow-left" circle size="mini"></el-button>
-        <el-button
-          v-for="page in totalPages"
-          :key="page"
-          @click="goToPage(page)"
-          :type="currentPage === page ? 'primary' : 'text'"
-          :class="['px-3 py-1 rounded', currentPage === page ? 'text-white bg-blue-500 shadow' : 'text-gray-500 bg-white hover:bg-gray-100']"
-          size="mini"
-        >
-          {{ page }}
-        </el-button>
-        <el-button @click="nextPage" :disabled="currentPage === totalPages" class="px-3 py-1 rounded text-gray-500 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed" icon="el-icon-arrow-right" circle size="mini"></el-button>
-      </nav>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="currentPage"
+        :page-size="itemsPerPage"
+        :total="allProjects.length"
+        @current-change="handlePageChange"
+      />
     </div>
 
   </div>
@@ -118,6 +112,10 @@ export default {
       this.$router.push({ path: '/task', query: { projectId } });
     },
     handleStarClick(project) {
+    },
+    handlePageChange(page) {
+      this.currentPage = page;
+      this.updateProjectsForPage();
     }
   }
 }
