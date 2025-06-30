@@ -2,36 +2,36 @@
   {
     "name": "login",
     "path": "/login",
-    "component": "D:\\\\Downloads\\\\TodoList\\\\test\\\\FE\\\\pages\\\\login.vue",
+    "component": "C:\\\\Users\\\\RB005\\\\Downloads\\\\Todolist\\\\FE\\\\pages\\\\login.vue",
     "chunkName": "pages/login",
-    "_name": "_6e8c48de"
+    "_name": "_0da72821"
   },
   {
     "name": "profile",
     "path": "/profile",
-    "component": "D:\\\\Downloads\\\\TodoList\\\\test\\\\FE\\\\pages\\\\profile.vue",
+    "component": "C:\\\\Users\\\\RB005\\\\Downloads\\\\Todolist\\\\FE\\\\pages\\\\profile.vue",
     "chunkName": "pages/profile",
-    "_name": "_7cde11d1"
+    "_name": "_3baa7a61"
   },
   {
     "name": "project",
     "path": "/project",
-    "component": "D:\\\\Downloads\\\\TodoList\\\\test\\\\FE\\\\pages\\\\project.vue",
+    "component": "C:\\\\Users\\\\RB005\\\\Downloads\\\\Todolist\\\\FE\\\\pages\\\\project.vue",
     "chunkName": "pages/project",
-    "_name": "_3a419b41"
+    "_name": "_0de3f85e"
   },
   {
     "name": "task",
     "path": "/task",
-    "component": "D:\\\\Downloads\\\\TodoList\\\\test\\\\FE\\\\pages\\\\task.vue",
+    "component": "C:\\\\Users\\\\RB005\\\\Downloads\\\\Todolist\\\\FE\\\\pages\\\\task.vue",
     "chunkName": "pages/task",
-    "_name": "_a196f4e6"
+    "_name": "_efb93206"
   },
   {
     "name": "index",
     "path": "/",
-    "component": "D:\\\\Downloads\\\\TodoList\\\\test\\\\FE\\\\pages\\\\index.vue",
+    "component": "C:\\\\Users\\\\RB005\\\\Downloads\\\\Todolist\\\\FE\\\\pages\\\\index.vue",
     "chunkName": "pages/index",
-    "_name": "_01db8f0c"
+    "_name": "_43ff850a"
   }
 ]

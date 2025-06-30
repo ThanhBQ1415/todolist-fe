@@ -1,6 +1,5 @@
 <template>
   <div class="bg-gray-100 min-h-screen">
-    <!-- Header & Filter Bar (luôn cố định trên cùng) -->
     <div class="flex flex-wrap items-center mb-4 gap-2 bg-gray-100 z-10 sticky top-0">
       <span class="text-sm text-gray-700 font-medium">Xem theo: <span class="font-semibold">Trạng thái</span></span>
       <span class="text-sm text-gray-700 ml-4">Giai đoạn: <span class="font-semibold">4-6/2025</span></span>
@@ -26,7 +25,7 @@
     </div>
 
     <div class="" style="">
-      <div class="overflow-x-scroll h-full">
+      <div class="overflow-x-auto h-full">
         <div class="flex flex-row gap-8 h-full min-h-0" style="min-width: max-content;">
           <Container orientation="horizontal" @drop="onColumnDrop">
             <Draggable v-for="(col, colIdx) in columns" :key="col.statusId">
@@ -67,7 +66,7 @@
                             {{ label.name }}
                           </span>
                         </div>
-                        <!-- Người được giao -->
+                  
                         <div class="flex items-center mt-1">
                           <el-dropdown @command="userId => changeAssignee(task, userId)">
                             <span class="flex items-center cursor-pointer">
@@ -119,8 +118,7 @@
       :projectId="taskDetailDialog.task.projectId"
       @close="taskDetailDialog.visible=false"
       @update="handleUpdateTask"
-    />
-    
+    />   
   </div>
 </template>
 
@@ -139,6 +137,24 @@ const STATUS_COLORS = {
   'CODE REVIEWING': '#06b6d4',
 };
 
+
+const debouncedSearch = debounce(async function (vm, value) {
+  vm.searchTitle = value;
+  if (!value) {
+    await vm.fetchColumnsAndTasks();
+    return;
+  }
+  const res = await searchTasksByTitle(value, vm.projectId);
+  if (res.success && Array.isArray(res.data)) {
+    const statusMap = {};
+    for (const col of vm.columns) statusMap[col.statusId] = { ...col, tasks: [] };
+    for (const task of res.data) {
+      if (statusMap[task.statusId]) statusMap[task.statusId].tasks.push(task);
+    }
+    vm.columns = Object.values(statusMap);
+  }
+}, 300);
+
 export default {
   components: { Container, Draggable, AddTaskDialog, TaskDetailDialog },
   data() {
@@ -148,6 +164,7 @@ export default {
       searchTitle: '',
       labels: [],
       users: [],
+      userMap: new Map(),
       addTaskDialog: {
         visible: false,
         title: '',
@@ -167,19 +184,22 @@ export default {
   },
   async mounted() {
     this.projectId = this.$route.query.projectId;
-    await this.fetchColumnsAndTasks();
-    const labelRes = await getAllLabels();
-    if (labelRes.success && Array.isArray(labelRes.data)) {
-      this.labels = labelRes.data;
-    }
-    const userRes = await getAllUsers();
-    if (userRes.success && Array.isArray(userRes.data)) {
-      this.users = userRes.data;
-    }
-    const statusRes = await getAllStatuses();
+    const [statusRes, labelRes, userRes] = await Promise.all([
+      getAllStatuses(),
+      getAllLabels(),
+      getAllUsers(),
+    ]);
     if (statusRes.success && Array.isArray(statusRes.data)) {
       this.statusList = statusRes.data;
     }
+    if (labelRes.success && Array.isArray(labelRes.data)) {
+      this.labels = labelRes.data;
+    }
+    if (userRes.success && Array.isArray(userRes.data)) {
+      this.users = userRes.data;
+      this.userMap = new Map(this.users.map(u => [u.userId, u]));
+    }
+    await this.fetchColumnsAndTasks();
   },
   methods: {
     async fetchColumnsAndTasks() {
@@ -201,25 +221,21 @@ export default {
     getStatusColor(name) {
       return STATUS_COLORS[name?.toUpperCase()] || '#6b7280';
     },
-    onColumnDrop(dropResult) {
-    },
+    onColumnDrop() {},
     onTaskDrop(destColIdx, dropResult) {
       if (!dropResult || dropResult.addedIndex == null) return;
       const { payload } = dropResult;
       if (!payload || payload.sourceColIdx === undefined) return;
-
       const sourceColIdx = payload.sourceColIdx;
       const sourceCol = this.columns[sourceColIdx];
       const destCol = this.columns[destColIdx];
-      const task = payload; 
-
+      const task = payload;
       if (sourceColIdx === destColIdx) {
         const moved = sourceCol.tasks.splice(dropResult.removedIndex, 1)[0];
         sourceCol.tasks.splice(dropResult.addedIndex, 0, moved);
         this.$set(this.columns, sourceColIdx, { ...sourceCol, tasks: [...sourceCol.tasks] });
         return;
       }
-
       updateTaskStatusPatch(task.taskId, destCol.statusId).then(res => {
         if (res.success) {
           sourceCol.tasks = sourceCol.tasks.filter(t => t.taskId !== task.taskId);
@@ -236,22 +252,9 @@ export default {
       const d = new Date(date);
       return d.toLocaleDateString('vi-VN');
     },
-    onSearchTitleInput: debounce(async function(value) {
-      this.searchTitle = value;
-      if (!value) {
-        await this.fetchColumnsAndTasks();
-        return;
-      }
-      const res = await searchTasksByTitle(value, this.projectId);
-      if (res.success && Array.isArray(res.data)) {
-        const statusMap = {};
-        for (const col of this.columns) statusMap[col.statusId] = { ...col, tasks: [] };
-        for (const task of res.data) {
-          if (statusMap[task.statusId]) statusMap[task.statusId].tasks.push(task);
-        }
-        this.columns = Object.values(statusMap);
-      }
-    }, 300),
+    onSearchTitleInput(value) {
+      debouncedSearch(this, value);
+    },
     getLabelsForTask(task) {
       if (!task.labelId || !Array.isArray(task.labelId)) return [];
       return this.labels.filter(l => task.labelId.includes(l.labelId));
@@ -284,9 +287,9 @@ export default {
       }
     },
     getUserById(userId) {
-      return this.users.find(u => u.userId === userId);
+      return this.userMap.get(userId);
     },
-    async changeAssignee(task, newAssigneeId) {
+    async changeAssignee(task, newAssigneeId) {   
       if (task.assigneeId === newAssigneeId) return;
       const res = await updateTask(task.taskId, { ...task, assigneeId: newAssigneeId });
       if (res.success) {

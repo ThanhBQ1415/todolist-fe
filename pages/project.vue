@@ -1,7 +1,5 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-
-
     <!-- Filter and View Options -->
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center space-x-2 text-gray-600">

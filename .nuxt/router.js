@@ -4,11 +4,11 @@ import { normalizeURL, decode } from 'ufo'
 import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
-const _6e8c48de = () => interopDefault(import('..\\pages\\login.vue' /* webpackChunkName: "pages/login" */))
-const _7cde11d1 = () => interopDefault(import('..\\pages\\profile.vue' /* webpackChunkName: "pages/profile" */))
-const _3a419b41 = () => interopDefault(import('..\\pages\\project.vue' /* webpackChunkName: "pages/project" */))
-const _a196f4e6 = () => interopDefault(import('..\\pages\\task.vue' /* webpackChunkName: "pages/task" */))
-const _01db8f0c = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages/index" */))
+const _0da72821 = () => interopDefault(import('..\\pages\\login.vue' /* webpackChunkName: "pages/login" */))
+const _3baa7a61 = () => interopDefault(import('..\\pages\\profile.vue' /* webpackChunkName: "pages/profile" */))
+const _0de3f85e = () => interopDefault(import('..\\pages\\project.vue' /* webpackChunkName: "pages/project" */))
+const _efb93206 = () => interopDefault(import('..\\pages\\task.vue' /* webpackChunkName: "pages/task" */))
+const _43ff850a = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages/index" */))
 
 const emptyFn = () => {}
 
@@ -23,23 +23,23 @@ export const routerOptions = {
 
   routes: [{
     path: "/login",
-    component: _6e8c48de,
+    component: _0da72821,
     name: "login"
   }, {
     path: "/profile",
-    component: _7cde11d1,
+    component: _3baa7a61,
     name: "profile"
   }, {
     path: "/project",
-    component: _3a419b41,
+    component: _0de3f85e,
     name: "project"
   }, {
     path: "/task",
-    component: _a196f4e6,
+    component: _efb93206,
     name: "task"
   }, {
     path: "/",
-    component: _01db8f0c,
+    component: _43ff850a,
     name: "index"
   }],
 
